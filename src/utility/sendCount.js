@@ -7,43 +7,25 @@ const Axios = require('axios').default;
  * @param {Number} timeout Timeinterval between sending server count
  * @param {Boolean} disableConsole Whether you want console logs or not
  */
-module.exports = (client, token, timeout = 1800000, disableConsole = false) => {
-    return new Promise((res, rej) => {
-        try {
-            Axios.patch(`https://api.botlists.com/bot/${client.user.id}`, {
-                // The bot data
-                guilds: client.guilds.cache.size,
-                shards: client.shard ? client.shard.count : 0,
-                status: client.user.presence ? client.user.presence.status : "online"
-            }, { // The authorization
-                headers: {
-                    Authorization: token
-                }
-            }).then(v => {
-                if (!disableConsole) console.log("[ botlists.js ] : Successfully Updated Server Count");
-            }).catch(e => {
-                if (!disableConsole) console.log("[ botlists.js ] : Failed in Updating Server Count");
-                rej(e);
-            })
-            setInterval(() => {
-                Axios.patch(`https://api.botlists.com/bot/${client.user.id}`, {
-                    // The bot data
-                    guilds: client.guilds.cache.size,
-                    shards: client.shard ? client.shard.count : 0,
-                    status: client.user.presence ? client.user.presence.status : "online"
-                }, { // The authorization
-                    headers: {
-                        Authorization: token
-                    }
-                }).then(v => {
-                    if (!disableConsole) console.log("[ botlists.js ] : Successfully Updated Server Count");
-                }).catch(e => {
-                    if (!disableConsole) console.log("[ botlists.js ] : Failed in Updating Server Count");
-                    rej(e.toJSON());
-                })
-            }, timeout)
-        } catch (e) {
-            rej(e);
+module.exports = async function sendCount(client, token, timeout = 1800000, disableConsole = false) {
+
+    Axios.patch(`https://api.botlists.com/bot/${client.user.id}`, {
+        // The bot data
+        guilds: client.guilds.cache.size,
+        shards: client.shard ? client.shard.count : 0,
+        status: client.user.presence ? client.user.presence.status : "online"
+    }, { // The authorization
+        headers: {
+            Authorization: token
         }
+    }).then(() => {
+        if (disableConsole) return;
+        console.log("[ botlists.js ] : Successfully Updated Server Count");
+    }).catch(() => {
+        if (!disableConsole) return;
+        console.log("[ botlists.js ] : Failed in Updating Server Count");
     })
+
+    await new Promise((res) => setTimeout(res, timeout));
+    sendCount(client, token, timeout, disableConsole);
 }
