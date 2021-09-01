@@ -25,4 +25,3 @@ module.exports = (client, token, timeout = 1800000, disableConsole = false) => {
         }
     })
 }
-
