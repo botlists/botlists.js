@@ -15,14 +15,10 @@ module.exports = (client, token, timeout = 1800000, disableConsole = false) => {
         if ((typeof (timeout) !== "number" && typeof (timeout) !== "bigint") || timeout < 300000) return reject("Invalid Timeout, Timeout should be in milli seconds and at least greater than 300000");
         if (typeof (disableConsole) !== "boolean") return reject("Invalid disableConsole type, it should be either false or true");
 
-        // The real thing
-        try {
-            // If client is ready i.e. it have its data
-            if (client.isReady()) sendCount(client, token, timeout, disableConsole);
-            else client.once('ready', () => sendCount(client, token, timeout, disableConsole))
-        } catch (e) {
-            reject(e);
-        }
+        // If client is ready i.e. it have its data
+        if (client.isReady()) sendCount(client, token, timeout, disableConsole);
+        else client.once('ready', () => sendCount(client, token, timeout, disableConsole));
+
+        resolve("Auto Server Count Sender is activated");
     })
 }
-
