@@ -21,7 +21,7 @@ module.exports = (client, token, disableConsole = false) => {
         }
         else {
             client.once('ready', () => cron.schedule('1h', sendCount(client, token, disableConsole)));
-        }
+        }   
 
         resolve("Auto Server Count Sender is activated");
     })
