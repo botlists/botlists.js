@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/botlists/botlists.js#readme",
   "dependencies": {
-    "axios": "^0.21.1",
-    "discord.js": "^13.1.0"
+    "axios": "^0.21.1"
   }
 }
