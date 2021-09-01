@@ -19,11 +19,13 @@ module.exports = async function sendCount(client, token, timeout = 1800000, disa
             Authorization: token
         }
     }).then(() => {
-        if (disableConsole) return;
-        console.log("[ botlists.js ] : Successfully Updated Server Count");
+        if (!disableConsole) {
+            console.log("[ botlists.js ] : Successfully Updated Server Count");
+        }
     }).catch(() => {
-        if (!disableConsole) return;
-        console.log("[ botlists.js ] : Failed in Updating Server Count");
+        if (!disableConsole) {
+            console.log("[ botlists.js ] : Failed in Updating Server Count");
+        }
     })
 
     // Waiting for the timeout than re-sending the request
