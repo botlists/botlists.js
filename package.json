@@ -2,7 +2,7 @@
   "name": "botlists.js",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/botlists/botlists.js/issues"
   },
-  "homepage": "https://github.com/botlists/botlists.js#readme"
+  "homepage": "https://github.com/botlists/botlists.js#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "discord.js": "^13.1.0"
+  }
 }
