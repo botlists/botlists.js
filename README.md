@@ -20,7 +20,7 @@ const token = "your-token";
  * @param {Number} timeout Timeinterval between sending server count
  * @param {Boolean} disableConsole Whether you want console logs or not
  */
-botlist(client, token, 600000, false).then((message)=>{
+botlist(client, token, false).then((message)=>{
     // Success
     console.log(message);
 }).catch((e)=>{
