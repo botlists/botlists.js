@@ -26,9 +26,5 @@ module.exports = async function sendCount(client, token, timeout = 1800000, disa
         if (!disableConsole) {
             console.log("[ botlists.js ] : Failed in Updating Server Count");
         }
-    })
-
-    // Waiting for the timeout than re-sending the request
-    await new Promise((res) => setTimeout(res, timeout));
-    sendCount(client, token, timeout, disableConsole);
+    });
 }
