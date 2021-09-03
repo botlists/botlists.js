@@ -1,5 +1,4 @@
-const sendCount = require('./utility/sendCount');
-const cron = require('node-cron');
+const { isClient, startCron } = require('./utility');
 
 /**
  * An module to auto send your server counts to botlists.com
@@ -10,18 +9,11 @@ const cron = require('node-cron');
 module.exports = (client, token, disableConsole = false) => {
     return new Promise((resolve, reject) => {
         // Invalid Parameter handling
-        if (!client || typeof (client) !== "object") return reject("Invalid Client was provided");
+        if (!isClient) return reject("Invalid Client was provided");
         if (!token || typeof (token) !== "string" || token.length !== 36) return reject("Invalid Token was provided");
         if (typeof (disableConsole) !== "boolean") return reject("Invalid disableConsole type, it should be either false or true");
 
-        // If client is ready i.e. it have its data
-        if (client.isReady()) {
-            cron.schedule('1h', sendCount(client, token, disableConsole));
-        }
-        else {
-            client.once('ready', () => cron.schedule('1h', sendCount(client, token, disableConsole)));
-        }
-
-        resolve("Auto Server Count Sender is activated");
+        // Start the cron job
+        startCron(client,token,disableConsole).then(v => resolve(v)).catch(e => reject(e));
     })
 }
