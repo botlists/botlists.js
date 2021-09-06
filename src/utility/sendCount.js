@@ -7,7 +7,7 @@ const Axios = require('axios').default;
  * @param {Number} timeout Timeinterval between sending server count
  * @param {Boolean} disableConsole Whether you want console logs or not
  */
-module.exports = async function sendCount(client, token, timeout = 1800000, disableConsole = false) {
+module.exports = async function sendCount(client, token, disableConsole = false) {
 
     Axios.patch(`https://api.botlists.com/bot/${client.user.id}`, {
         // The bot data
@@ -19,14 +19,12 @@ module.exports = async function sendCount(client, token, timeout = 1800000, disa
             Authorization: token
         }
     }).then(() => {
-        if (disableConsole) return;
-        console.log("[ botlists.js ] : Successfully Updated Server Count");
+        if (!disableConsole) {
+            console.log("[ botlists.js ] : Successfully Updated Server Count");
+        }
     }).catch(() => {
-        if (!disableConsole) return;
-        console.log("[ botlists.js ] : Failed in Updating Server Count");
-    })
-
-    // Waiting for the timeout than re-sending the request
-    await new Promise((res) => setTimeout(res, timeout));
-    sendCount(client, token, timeout, disableConsole);
+        if (!disableConsole) {
+            console.log("[ botlists.js ] : Failed in Updating Server Count");
+        }
+    });
 }
