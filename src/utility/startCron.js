@@ -14,7 +14,7 @@ module.exports = async (client, token, disableConsole = false) => {
         if (client.isReady()) {
             sendCount(client, token, disableConsole).then(v => {
                 // Success
-                cron.schedule("* */59 * * *", sendCount.bind(this, client, token, disableConsole));
+                cron.schedule("0 * * * *", sendCount.bind(this, client, token, disableConsole));
                 resolve("Auto Server Count Sender is activated");
             }).catch(e => {
                 reject(e)
@@ -24,7 +24,7 @@ module.exports = async (client, token, disableConsole = false) => {
             client.once('ready', () => {
                 sendCount(client, token, disableConsole).then(v => {
                     // Success
-                    cron.schedule("* */1 * * *", sendCount.bind(this, client, token, disableConsole));
+                    cron.schedule("0 * * * *", sendCount.bind(this, client, token, disableConsole));
                     resolve("Auto Server Count Sender is activated");
                 }).catch(e => {
                     reject(e)

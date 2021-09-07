@@ -48,6 +48,15 @@ botlist.getBotWidget("some bot ID, if no ID than your bot's widget is returned")
     // Fail
     console.log(e)
 });
+
+// To get a user's info on the website.
+botlist.getUserInfo("User ID").then(v=>{
+    // The user's data
+    console.log(v);
+}).catch(e=>{
+    // Fail
+    console.log(e)
+});
 ```
 
 # Support
