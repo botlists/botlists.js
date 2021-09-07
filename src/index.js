@@ -1,7 +1,11 @@
-const Axios = require('axios').default;
-const { isClient, startCron } = require('./utility');
+const { isClient, startCron, get } = require('./utility');
 
 class botList {
+  // Private Properties
+  #token;
+  #client;
+  #disableConsole;
+
   /**
     * An module to auto send your server counts to botlists.com
     * @param {*} client Your Discord Bot Client
@@ -9,13 +13,15 @@ class botList {
     * @param {Boolean} disableConsole Whether you want console logs or not
     */
   constructor(client, token = "no_token", disableConsole = false) {
-    if (!isClient(client))throw new Error("Invalid Client was provided");
-    if (token !== "no_token" && (!token || typeof (token) !== "string" || token.length !== 36))throw new Error("Invalid Token was provided");
-    if (typeof (disableConsole) !== "boolean")throw new Error("Invalid disableConsole type, it should be either false or true");
+    if (!isClient(client)) throw new Error("Invalid Client was provided");
 
-    this._client = client;
-    this.token = token;
-    this.disableConsole = disableConsole;
+    if (token !== "no_token" && (!token || typeof (token) !== "string" || token.length !== 36)) throw new Error("Invalid Token was provided");
+
+    if (typeof (disableConsole) !== "boolean") throw new Error("Invalid disableConsole type, it should be either false or true");
+
+    this.#client = client;
+    this.#token = token;
+    this.#disableConsole = disableConsole;
   }
 
   /**
@@ -24,12 +30,12 @@ class botList {
    */
   autoCounter(token = "no_token") {
     return new Promise((resolve, reject) => {
-      if (this.token === "no_token" && token === "no_token") throw new Error("Please provide a token before using AutoCounter");
+      if (this.#token === "no_token" && token === "no_token") throw new Error("Please provide a token before using AutoCounter");
 
-      if ((this.token === "no_token" || token !== "no_token") && (!token || typeof (token) !== "string" || token.length !== 36)) throw new Error("Invalid Token was provided in AutoCounter method");
+      if ((this.#token === "no_token" || token !== "no_token") && (!token || typeof (token) !== "string" || token.length !== 36)) throw new Error("Invalid Token was provided in AutoCounter method");
 
       // Start the cron job
-      startCron(this._client, token !== "no_token" ? token : this.token, this.disableConsole).then(v => resolve(v)).catch(e => reject(e));
+      startCron(this.#client, token !== "no_token" ? token : this.#token, this.#disableConsole).then(v => resolve(v)).catch(e => reject(e));
     });
   }
 
@@ -40,18 +46,10 @@ class botList {
   */
   getBotInfo(id = "no_id") {
     return new Promise((resolve, reject) => {
-      if (id !== "no_id" && (typeof (id) !== "string" || id.length !== 18)) throw new Error("Invalid Client ID was provided");
+      const data = get(`https://api.botlists.com/bot/${id === "no_id" ? this.#client.user.id : id}`, this.#token);
 
-      // Sending the request to the API.
-      Axios.get(`https://api.botlists.com/bot/${id === "no_id" ? this._client.user.id : id}`, {
-        headers: { // Authorization
-          Authorization: this.token
-        }
-      }).then(({ data }) => {
-        resolve(data);
-      }).catch(e => {
-        reject(e.toJSON());
-      })
+      if (data.name === "Error") reject("Invalid Bot ID was provided");
+      else resolve(data);
     })
   }
 
@@ -64,13 +62,10 @@ class botList {
     return new Promise((resolve, reject) => {
       if (id === "no_id" || typeof (id) !== "string" || id.length !== 18) throw new Error("Invalid User ID was provided");
 
-      // Sending the request to the API.
-      Axios.get(`https://api.botlists.com/user/${id}`)
-        .then(({ data }) => {
-          resolve(data);
-        }).catch(e => {
-          reject(e.toJSON());
-        })
+      const data = get(`https://api.botlists.com/user/${id}`);
+
+      if (data.name === "Error") reject("Invalid Bot ID was provided");
+      else resolve(data);
     })
   }
 
@@ -81,13 +76,10 @@ class botList {
   */
   getBotWidget(id = "no_id") {
     return new Promise((resolve, reject) => {
-      if (id !== "no_id" && (typeof (id) !== "string" || id.length !== 18)) throw new Error("Invalid Client ID was provided");
+      const data = get(`https://api.botlists.com/bot/${id === "no_id" ? this.#client.user.id : id}/widget`, this.#token);
 
-      Axios.get(`https://api.botlists.com/bot/${id === "no_id" ? this._client.user.id : id}/widget`).then(({ data }) => {
-        resolve(data);
-      }).catch(e => {
-        reject(e.toJSON());
-      })
+      if (data.name === "Error") reject("Invalid Bot ID was provided");
+      else resolve(data);
     })
   }
 }
