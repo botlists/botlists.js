@@ -29,7 +29,7 @@ class botList {
    * @param {String} id The bot's ID who' info you want, If no ID is provided than it will return your client's info.
    */
   autoCounter(token = "no_token") {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (this.#token === "no_token" && token === "no_token") throw new Error("Please provide a token before using AutoCounter");
 
       if ((this.#token === "no_token" || token !== "no_token") && (!token || typeof (token) !== "string" || token.length !== 36)) throw new Error("Invalid Token was provided in AutoCounter method");
@@ -45,8 +45,8 @@ class botList {
    * @returns {Promise<botData>} The bot data on the website.
   */
   getBotInfo(id = "no_id") {
-    return new Promise((resolve, reject) => {
-      const data = get(`https://api.botlists.com/bot/${id === "no_id" ? this.#client.user.id : id}`, this.#token);
+    return new Promise(async (resolve, reject) => {
+      const data = await get(`bot/${id === "no_id" ? this.#client.user.id : id}`, this.#token);
 
       if (data.name === "Error") reject("Invalid Bot ID was provided");
       else resolve(data);
@@ -59,10 +59,10 @@ class botList {
    * @returns {Promise<userData>} The user data on the website.
   */
   getUserInfo(id = "no_id") {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (id === "no_id" || typeof (id) !== "string" || id.length !== 18) throw new Error("Invalid User ID was provided");
 
-      const data = get(`https://api.botlists.com/user/${id}`);
+      const data = await get(`user/${id}`);
 
       if (data.name === "Error") reject("Invalid Bot ID was provided");
       else resolve(data);
@@ -75,10 +75,29 @@ class botList {
     * @returns {Prmoise<String>} Returns the HTML code of the widget. 
   */
   getBotWidget(id = "no_id") {
-    return new Promise((resolve, reject) => {
-      const data = get(`https://api.botlists.com/bot/${id === "no_id" ? this.#client.user.id : id}/widget`, this.#token);
+    return new Promise(async (resolve, reject) => {
+      const data = await get(`bot/${id === "no_id" ? this.#client.user.id : id}/widget`, this.#token);
 
       if (data.name === "Error") reject("Invalid Bot ID was provided");
+      else resolve(data);
+    })
+  }
+
+  /**
+   * 
+   * @param {String} id The user ID
+   * @param {String} token The bot's token
+   * @returns {Promise<userVoted} An object.
+   */
+  userVoted(id, token = "no_token") {
+    if (!id || typeof (id) !== "string" || id.length !== 18) throw new Error("Invalid User ID was provided");
+    if ((token !== "no_token") && (!token || typeof (token) !== "string" || token.length !== 36)) throw new Error("Invalid Token was provided in userVoted method");
+
+    return new Promise(async (resolve, reject) => {
+      const data = await get(`/user/${id}/voted`, token === "no_token" ? this.#token : token, false);
+
+      if (data.error) reject(data);
+      else if ("voted" in data && !("votes" in data)) reject({ error: "User not found or User never voted for your bot", status: 404 });
       else resolve(data);
     })
   }
@@ -113,4 +132,10 @@ module.exports = botList;
  * @property {String} image The avatar on the website.
  * @property {Boolean} valid Whether the USER is an valid user or not.
  * @property {Boolean} cache Whether the USER is cached or not.
+ */
+
+/**
+ * @typedef {Object} userVoted
+ * @property {Boolean} voted User voted or not.
+ * @property {Number} votes Number of time user voted.
  */
