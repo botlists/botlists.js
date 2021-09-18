@@ -2,9 +2,9 @@ const { isClient, startCron, get } = require('./utility');
 
 class botList {
   // Private Properties
-  #token;
-  #client;
-  #disableConsole;
+  _token;
+  _client;
+  _disableConsole;
 
   /**
     * An module to auto send your server counts to botlists.com
@@ -19,9 +19,9 @@ class botList {
 
     if (typeof (disableConsole) !== "boolean") throw new Error("Invalid disableConsole type, it should be either false or true");
 
-    this.#client = client;
-    this.#token = token;
-    this.#disableConsole = disableConsole;
+    this._client = client;
+    this._token = token;
+    this._disableConsole = disableConsole;
   }
 
   /**
@@ -30,12 +30,12 @@ class botList {
    */
   autoCounter(token = "no_token") {
     return new Promise(async (resolve, reject) => {
-      if (this.#token === "no_token" && token === "no_token") throw new Error("Please provide a token before using AutoCounter");
+      if (this._token === "no_token" && token === "no_token") throw new Error("Please provide a token before using AutoCounter");
 
-      if ((this.#token === "no_token" || token !== "no_token") && (!token || typeof (token) !== "string" || token.length !== 36)) throw new Error("Invalid Token was provided in AutoCounter method");
+      if ((this._token === "no_token" || token !== "no_token") && (!token || typeof (token) !== "string" || token.length !== 36)) throw new Error("Invalid Token was provided in AutoCounter method");
 
       // Start the cron job
-      startCron(this.#client, token !== "no_token" ? token : this.#token, this.#disableConsole).then(v => resolve(v)).catch(e => reject(e));
+      startCron(this._client, token !== "no_token" ? token : this._token, this._disableConsole).then(v => resolve(v)).catch(e => reject(e));
     });
   }
 
@@ -46,7 +46,7 @@ class botList {
   */
   getBotInfo(id = "no_id") {
     return new Promise(async (resolve, reject) => {
-      const data = await get(`bot/${id === "no_id" ? this.#client.user.id : id}`, this.#token);
+      const data = await get(`bot/${id === "no_id" ? this._client.user.id : id}`, this._token);
 
       if (data.name === "Error") reject("Invalid Bot ID was provided");
       else resolve(data);
@@ -76,7 +76,7 @@ class botList {
   */
   getBotWidget(id = "no_id") {
     return new Promise(async (resolve, reject) => {
-      const data = await get(`bot/${id === "no_id" ? this.#client.user.id : id}/widget`, this.#token);
+      const data = await get(`bot/${id === "no_id" ? this._client.user.id : id}/widget`, this._token);
 
       if (data.name === "Error") reject("Invalid Bot ID was provided");
       else resolve(data);
@@ -94,7 +94,7 @@ class botList {
     if ((token !== "no_token") && (!token || typeof (token) !== "string" || token.length !== 36)) throw new Error("Invalid Token was provided in userVoted method");
 
     return new Promise(async (resolve, reject) => {
-      const data = await get(`/user/${id}/voted`, token === "no_token" ? this.#token : token, false);
+      const data = await get(`/user/${id}/voted`, token === "no_token" ? this._token : token, false);
 
       if (data.error) reject(data);
       else if ("voted" in data && !("votes" in data)) reject({ error: "User not found or User never voted for your bot", status: 404 });
