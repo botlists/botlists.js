@@ -1,9 +1,11 @@
 {
   "name": "botlists.js",
   "version": "1.0.0",
-  "description": "Botlists.com Api Wrapper",
+  "description": "An module to auto update your server count on botlists.com",
   "main": "src/index.js",
-  "scripts": { },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/botlists/botlists.js.git"
@@ -16,6 +18,7 @@
   },
   "homepage": "https://github.com/botlists/botlists.js#readme",
   "dependencies": {
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "node-cron": "^3.0.0"
   }
 }
