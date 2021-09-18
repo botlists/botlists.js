@@ -1,6 +1,6 @@
 {
   "name": "botlists.js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "An module to auto update your server count on botlists.com",
   "main": "src/index.js",
   "scripts": {},
